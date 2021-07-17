@@ -23,6 +23,7 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todos)
 }
+
 func getTodo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -33,15 +34,14 @@ func getTodo(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
 func createTodo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
 	var todo todo
 	_ = json.NewDecoder(r.Body).Decode(&todo)
 	todo.Id = strconv.Itoa(rand.Intn(100000000))
 	todos = append(todos, todo)
 	json.NewEncoder(w).Encode(todo)
-
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
@@ -80,8 +80,8 @@ func main() {
 	r.HandleFunc("/todo", getTodos).Methods("GET")
 	r.HandleFunc("/todo/{id}", getTodo).Methods("GET")
 	r.HandleFunc("/todo", createTodo).Methods("POST")
-	r.HandleFunc("/todo{id}", deleteTodo).Methods("DELETE")
-	r.HandleFunc("/todo{id}", UpdateTodo).Methods("PUT")
+	r.HandleFunc("/todo/{id}", deleteTodo).Methods("DELETE")
+	r.HandleFunc("/todo/{id}", UpdateTodo).Methods("PUT")
 	fmt.Printf("Starting Server at port 8080 \n")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
